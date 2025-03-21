@@ -11,3 +11,6 @@ docs/_build/*
 figures/*.pdf
 figures/*.png
 figures/tmp/*
+
+*.egg-info/
+.ipynb_checkpoints/

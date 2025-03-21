@@ -9,7 +9,8 @@ This script is primarily used in the humam_tutorial.ipynb notebook.
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.colors import LogNorm
-from data_loader.dk_fullnames_to_shortnames import dk_full_to_short
+
+from ..data_loader.dk_fullnames_to_shortnames import dk_full_to_short
 
 def calculate_indegrees(synapses, neurons):
     """

@@ -6,8 +6,9 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 from scipy.stats import gaussian_kde
 from scipy.stats import ks_2samp
-from compute_scaling_experiments_helpers import json_load, calc_mean_std
-from compute_scaling_experiments_helpers import right_ordering as fMRI_ordering
+
+from ..compute_scaling_experiments.compute_scaling_experiments_helpers import json_load, calc_mean_std
+from ..compute_scaling_experiments.compute_scaling_experiments_helpers import right_ordering as fMRI_ordering
 
 experiments = [
         'lower_etoi',

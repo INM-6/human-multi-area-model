@@ -1,5 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 
+__all__ = [
+    "mu_sigma_lognorm",
+]
 
 def mu_sigma_lognorm(mean, rel_sd):
     """

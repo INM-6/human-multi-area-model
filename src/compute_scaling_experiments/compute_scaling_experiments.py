@@ -3,9 +3,12 @@ import sys
 import numpy as np
 import pandas as pd
 from scipy.stats import ks_2samp
-from compute_scaling_experiments_helpers import get_cc_scalingEtoE, load_data, get_neuron, cvIsi, LVr
-from compute_scaling_experiments_helpers import calculateFuncionalConnectivityCorrelations
-from compute_scaling_experiments_helpers import lvr_from_isi, json_dump
+
+from .compute_scaling_experiments_helpers import get_cc_scalingEtoE, load_data, get_neuron, cvIsi, LVr
+from .compute_scaling_experiments_helpers import calculateFuncionalConnectivityCorrelations
+from .compute_scaling_experiments_helpers import lvr_from_isi, json_dump
+
+
 
 
 number_of_simulated_2s_snippets = 6

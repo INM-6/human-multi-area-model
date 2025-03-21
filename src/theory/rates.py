@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import pandas as pd
 from scipy.integrate import solve_ivp
@@ -5,6 +7,10 @@ from scipy.integrate import solve_ivp
 from nnmt.lif.exp import _firing_rate_shift
 from nnmt.lif._general import _mean_input, _std_input
 
+__all__ = [
+    "initial_rates_uniform",
+    "solve",
+]
 
 def initial_rates_uniform(net_dict, trials, min, max, seed=None):
     """

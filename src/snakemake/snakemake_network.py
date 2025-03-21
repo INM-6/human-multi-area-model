@@ -9,11 +9,11 @@ import os
 import sys
 import importlib.util
 
-from helpers.snakemake import nested_dict_update, get_git_revision_hash
-from default_net_params import params as net_params
-from data_preprocessing.cytoarchitecture import NeuronNumbers
-from data_preprocessing.connectivity import SynapseNumbers
-from network import Network
+from .snakemake_helpers import nested_dict_update, get_git_revision_hash
+from ..params.default_net_params import params as net_params
+from ..data_preprocessing.cytoarchitecture import NeuronNumbers
+from ..data_preprocessing.connectivity import SynapseNumbers
+from ..network import Network
 
 
 # Load script from specified path sys.argv[1] (snakemake {input})

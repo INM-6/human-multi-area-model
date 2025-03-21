@@ -9,8 +9,8 @@ import matplotlib.transforms
 
 import networkx as nx
 
-from network import networkDictFromDump
-from data_loader.dk_fullnames_to_shortnames import dk_full_to_short
+from ..network import networkDictFromDump
+from ..data_loader.dk_fullnames_to_shortnames import dk_full_to_short
 
 # set params &  hashes
 dt = 0.1

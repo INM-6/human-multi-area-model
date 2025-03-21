@@ -1,0 +1,28 @@
+[project]
+name = "humam"
+version = "2.1.0-a1"
+authors = [
+  {name = "Renan Oliveira Shimoura", email = "r.shimoura@fz-juelich.de"},
+  {name = "Jari Pronold"},
+  {name = "Alexander van Meegen"},
+]
+description = "The multi-scale spiking network model comprises all 34 areas of the Desikan-Killiany parcellation in one hemisphere of human cerebral cortex."
+readme = "README.md"
+requires-python = ">=3.12"
+keywords = ["human", "multi-area-model"]
+license = {text = "BSD-3-Clause"}
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python :: 3.12",
+  "Intended Audience :: Science/Research",
+]
+dynamic = ["dependencies"]
+
+[tool.black]
+line-length = 120
+
+[tool.setuptools]
+package-dir = {"humam" = "src"}
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}

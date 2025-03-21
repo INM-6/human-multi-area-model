@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-import numpy as np
-from scipy import stats, integrate
-import pandas as pd
-from itertools import product
-from data_loader.microcircuit import p as p_PD
-from data_loader.microcircuit import K_ext as K_ext_PD
-from data_loader.hcp_dti import HcpDesikanKilliany, VolumesDK
-from data_loader.synapse_cellbody_probability import mohan, binzegger
 
+import numpy as np
+import scipy as sci
+import pandas as pd
+
+from .. import data_loader as dl
+
+__all__ = [
+    "SynapseNumbers",
+]
 
 class SynapseNumbers():
     """
@@ -43,9 +44,9 @@ class SynapseNumbers():
     a1 : float
         Fit parameter for SLN fit from neuron densities.
     """
-
     def __init__(self, connectivity, NN, con_path, vol_path, FLN, rho_syn,
                  Z_i, SLN_FF, SLN_FB, lmbda, a0, a1):
+
         self.NN = NN
         # Collect all parameters, e.g. for later export
         self.params = {
@@ -74,14 +75,14 @@ class SynapseNumbers():
         # numbers dependent on the connectivity data.
         if connectivity == 'HcpDesikanKilliany':
             # Load area volumes in mm^3
-            area_volumes = VolumesDK(vol_path).getVolume()
+            area_volumes = dl.hcp_dti.VolumesDK(vol_path).getVolume()
             # Assert same atlas
             assert(np.array_equal(area_volumes.index.values, self.area_list))
             # Calculate area specific surface area
             self.area_surface = area_volumes / self.NN.getTotalThickness()
 
             # Load NOS, randomly take right hemisphere
-            NOS = HcpDesikanKilliany(con_path).getConnectivityRight()
+            NOS = dl.hcp_dti.HcpDesikanKilliany(con_path).getConnectivityRight()
             # Assert same atlas
             assert(np.array_equal(NOS.index.values, self.area_list))
             # Calculate relNOS and account for FLN (cortico-cortical)
@@ -95,7 +96,7 @@ class SynapseNumbers():
 
             # Load atlas specific distances from fiber length.
             # Randomly take right hemisphere.
-            self.dist = HcpDesikanKilliany(con_path).getFiberLengthRight()
+            self.dist = dl.hcp_dti.HcpDesikanKilliany(con_path).getFiberLengthRight()
         else:
             raise NotImplementedError(
                 "Connectivity {} unknown.".format(connectivity)
@@ -194,7 +195,7 @@ class SynapseNumbers():
         """
         logratio = np.log(np.outer(rhoTarget, 1./rhoSource))
         SLN = pd.DataFrame(
-            data=stats.norm.cdf(a0 + a1*logratio, loc=0, scale=1),
+            data=sci.stats.norm.cdf(a0 + a1*logratio, loc=0, scale=1),
             index=rhoTarget.index.values,
             columns=rhoSource.index.values
         )
@@ -218,7 +219,7 @@ class SynapseNumbers():
                 return 'lat'
             else:
                 return 'FF'
-        d = self.SLN.applymap(lambda x: tmp(x, SLN_FF, SLN_FB))
+        d = self.SLN.map(lambda x: tmp(x, SLN_FF, SLN_FB))
         return d
 
     def populationSpecificSynapseNumbers(self, SLN_FF, SLN_FB, Z_i, lmbda):
@@ -233,6 +234,7 @@ class SynapseNumbers():
         N_syn_ext : DataFrame
             Population resolved internal syapse numbers.
         """
+        from itertools import product
 
         # Datastrucutres for cortico-cortical connectivity
         multiindex = pd.MultiIndex.from_product(
@@ -261,6 +263,7 @@ class SynapseNumbers():
             index=self.layer_list_plus1
         )
 
+        binzegger = dl.synapse_cellbody_probability.binzegger
         # Fraction of excitatory and inhibitory connections onto layers II/III,
         # IV, V, and VI. Taken from binzegger fractions
         E_connections_fraction = binzegger.loc[
@@ -270,6 +273,7 @@ class SynapseNumbers():
                 pd.IndexSlice[:, 'I'], :
                 ].sum(axis=0)
 
+        mohan = dl.synapse_cellbody_probability.mohan
         # Multiply the mohan data, which has only information on E connections
         # (all I entries are 0), with the fraction of E connections we want to
         # achieve. This fraction is taken from the binzegger data. This only
@@ -301,7 +305,7 @@ class SynapseNumbers():
                 # different parameters lead to the same results. Higher
                 # accuracy takes too long.
                 # TODO improve this!
-                P_in = integrate.nquad(
+                P_in = sci.integrate.nquad(
                     self.integrand_connectivity_profile_exp,
                     ranges=[
                         [0, 1e3/np.sqrt(np.pi)],
@@ -312,7 +316,7 @@ class SynapseNumbers():
                     args=[2*np.pi, total_thick_loc, lmbda],
                     opts={'epsrel': 1e-1}
                 )[0]
-                P_out = integrate.nquad(
+                P_out = sci.integrate.nquad(
                     self.integrand_connectivity_profile_exp,
                     ranges=[
                         [1e3/np.sqrt(np.pi), 1e3*np.sqrt(surface_loc/np.pi)],
@@ -327,14 +331,14 @@ class SynapseNumbers():
                 N_syn_loc_II = P_out / (P_in + P_out) * N_syn_loc
 
                 # break type I synapses down to population level
-                rel_p_PD = p_PD.mul(NN_loc, axis=0).mul(NN_loc, axis=1)
+                rel_p_PD = dl.microcircuit.p.mul(NN_loc, axis=0).mul(NN_loc, axis=1)
                 rel_p_PD /= rel_p_PD.values.sum()
                 N_syn.loc[(areaTarget), (areaSource)] = (
                     np.round(rel_p_PD.values * N_syn_loc_I)
                 )
 
                 # break type II synapses down to population level
-                rel_Indeg_ext = K_ext_PD * NN_loc
+                rel_Indeg_ext = dl.microcircuit.K_ext * NN_loc
                 rel_Indeg_ext /= rel_Indeg_ext.values.sum()
                 N_syn_ext.loc[areaTarget] = (
                     np.round(rel_Indeg_ext.values * N_syn_loc_II)

@@ -1,13 +1,21 @@
 # -*- coding: utf-8 -*-
+
 import nest
 import numpy as np
 import os
-from datetime import datetime
-import yaml
-from dicthash import dicthash
+from copy import deepcopy
 
-from helpers.lognormal import mu_sigma_lognorm
+from .helpers.lognormal import mu_sigma_lognorm
 
+from .params.default_sim_params import params as _default_params
+
+__all__ = [
+    "Simulation",
+    "simulationDictFromDump",
+]
+
+# visible for notebook
+default_params = deepcopy(_default_params)
 
 class Simulation():
     """
@@ -434,6 +442,8 @@ class Simulation():
 
     def simulate(self):
         """ Simulates the model."""
+        from datetime import datetime
+
         print("{} Start simulating".format(datetime.now()))
         nest.Simulate(self.sim_dict['t_sim'])
         print("{} Simulation finished".format(datetime.now()))
@@ -447,6 +457,8 @@ class Simulation():
         hash : str
             Hash for the simulation
         """
+        from dicthash import dicthash
+
         hash = dicthash.generate_hash_from_dict(self.sim_dict)
         return hash
 
@@ -475,6 +487,8 @@ class Simulation():
         base_folder : string
             Path to base output folder
         """
+        import yaml
+
         hash = self.getHash()
         out_folder = os.path.join(base_folder, hash)
         try:
@@ -502,6 +516,9 @@ def simulationDictFromDump(dump_folder):
     sim_dict : dict
         Full simulation dictionary
     """
+    import os
+    import yaml
+
     # Read sim.yaml
     fn = os.path.join(dump_folder, 'sim.yaml')
     with open(fn, 'r') as sim_file:

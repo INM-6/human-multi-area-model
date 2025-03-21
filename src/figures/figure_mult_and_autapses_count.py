@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-from network import networkDictFromDump
+from ..network import networkDictFromDump
 
 figname = "figure_mult_and_autapses_count"
 net_dict = networkDictFromDump(os.path.join(os.getcwd(), 'out/8c49a09f51f44fbb036531ce0719b5ba/'))

@@ -1,11 +1,18 @@
 # -*- coding: utf-8 -*-
-import os
-import yaml
+
 import numpy as np
 import pandas as pd
 from copy import deepcopy
-from dicthash import dicthash
 
+from .params.default_net_params import params as _default_params
+
+__all__ = [
+    "Network",
+    "networkDictFromDump",
+]
+
+# visible for notebook
+default_params = deepcopy(_default_params)
 
 class Network():
     """
@@ -468,7 +475,7 @@ class Network():
 
         Returns
         -------
-        dc_drive : Series
+        dc_drive : pd.Series
             Vector of DC drives
         """
         dc_drive = pd.Series(
@@ -684,6 +691,8 @@ class Network():
         hash : str
             Hash for the network
         """
+        from dicthash import dicthash
+
         elem_net = self._elementarify_dict(self.net)
         hash_ = dicthash.generate_hash_from_dict(elem_net)
         return hash_
@@ -705,6 +714,9 @@ class Network():
         base_folder : string
             Path to base output folder
         """
+        import os
+        import yaml
+
         hash_ = self.getHash()
         out_folder = os.path.join(base_folder, hash_)
         try:
@@ -758,6 +770,8 @@ class Network():
         d : dict
             Modified copy of the dict
         """
+        from copy import deepcopy
+
         r = {}
         for key, val in d.items():
             if isinstance(val, (np.float32, np.float64)):
@@ -886,6 +900,10 @@ def networkDictFromDump(dump_folder):
     net_dit : dict
         Full network dictionary
     """
+    import os
+    import yaml
+    import pandas as pd
+
     # Read net.yaml
     fn = os.path.join(dump_folder, 'net.yaml')
     with open(fn, 'r') as net_file:

@@ -1,0 +1,13 @@
+joblib==1.4.*
+xlrd==2.0.*
+matplotlib==3.9.*
+pyyaml==6.0.*
+numpy==2.1.*
+seaborn==0.13.*
+pandas==2.2.*
+scipy==1.14.*
+ipykernel==6.29.*
+nnmt==1.3.*
+dicthash==0.0.*
+networkx==3.4.*
+snakemake==8.30.*

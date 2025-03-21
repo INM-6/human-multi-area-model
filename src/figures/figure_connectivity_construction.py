@@ -5,19 +5,19 @@ from scipy.special import ndtr
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-from network import networkDictFromDump
-from data_loader.microcircuit import p as p_PD
-from data_loader.synapse_cellbody_probability import mohan
-from data_loader.dk_fullnames_to_shortnames import dk_full_to_short
+from ..network import networkDictFromDump
+from ..data_loader.microcircuit import p as p_PD
+from ..data_loader.synapse_cellbody_probability import mohan
+from ..data_loader.dk_fullnames_to_shortnames import dk_full_to_short
 
 
 has_macaque_data = True
 try:
     macaque_data = pd.read_pickle('experimental_data/macaque/macaque_data_merged.pkl')
 except FileNotFoundError:
-    print('WARNING: Did not find experimental_data/macaque/macaque_data_merged.pkl so the
-           data in the background of panel D will be missing in the figure. To
-           include the data please check if you have the necessary files in
+    print('WARNING: Did not find experimental_data/macaque/macaque_data_merged.pkl so the \
+           data in the background of panel D will be missing in the figure. To \
+           include the data please check if you have the necessary files in \
            experimental_data/macaque/, then run the script experimental_data/macaque/preprocessing.py')
     has_macaque_data = False
     exit(1)

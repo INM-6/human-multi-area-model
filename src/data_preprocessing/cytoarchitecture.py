@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
+
 import numpy as np
 import pandas as pd
 
-from data_loader import mapping_DK_vEK
-from data_loader.voneconomokoskinas import VonEconomoKoskinas
-from data_loader.ratio_exc_to_inh import ratio_exc_to_inh
+from .. import data_loader as dl
 
 # TODO __repr__(self)
 
+__all__ = [
+    "NeuronNumbers",
+]
 
 class NeuronNumbers():
     """
@@ -48,12 +51,12 @@ class NeuronNumbers():
         self.surface_area = surface_area
         self.layer_list = ['II/III', 'IV', 'V', 'VI']
         self.layer_list_plus1 = ['I'] + self.layer_list
-        fraction_E_neurons = ratio_exc_to_inh(ei_ratio_path)
+        fraction_E_neurons = dl.ratio_exc_to_inh.ratio_exc_to_inh(ei_ratio_path)
         self.setPopulationDefault(fraction_E_neurons=fraction_E_neurons)
 
         if source == 'VonEconomoKoskinas':
             # Load VEK data
-            vek = VonEconomoKoskinas(src_path)
+            vek = dl.voneconomokoskinas.VonEconomoKoskinas(src_path)
             self.area_list = vek.getAreaList()
             NeuronDensities = vek.getNeuronDensity()
             Layerthickness = vek.getLayerthickness()
@@ -168,7 +171,7 @@ class NeuronNumbers():
         """
         if source == 'VonEconomoKoskinas' and target == 'DesikanKilliany':
             # Load the mapping from desikan killiany to von Economo Koskinas
-            map_dk_to_vek = mapping_DK_vEK.dk_to_vEK
+            map_dk_to_vek = dl.mapping_DK_vEK.dk_to_vEK
             # Define the desikan killiany area list,
             # the layer list as well as the data frame that
             # holds the data.

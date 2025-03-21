@@ -2,6 +2,10 @@
 Provides default parameters used in the analysis.
 """
 
+__all__ = [
+    "params",
+]
+
 params = {}
 
 params['mplstyles'] = 'misc/mplstyles/report_plots_master.mplstyle'

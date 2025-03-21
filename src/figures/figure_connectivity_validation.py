@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import svgutils.transform as sg
 
-from network import networkDictFromDump
+from ..network import networkDictFromDump
 
 
 pval_min = 0.05
