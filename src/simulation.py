@@ -462,7 +462,10 @@ class Simulation():
         try:
             currMem = nest.ll_api.sli_func('memory_thisjob')/1024.
         except AttributeError:
-            currMem = nest.sli_func('memory_thisjob')/1024.
+            try:
+                currMem = nest.sli_func('memory_thisjob')/1024.
+            except AttributeError:
+                currMem = nest.memory_size/1024.
         return currMem
 
     def dump(self, base_folder):
